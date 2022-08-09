@@ -1,0 +1,7 @@
+{
+  "name": "timesheets",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
