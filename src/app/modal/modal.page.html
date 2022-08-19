@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>modal</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="stamp">
+    <ion-item>
+      <ion-label position="stacked">Week of {{stamp.weekOf}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Monday</ion-label>
+      <ion-input [(ngModel)]="stamp.mon" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Tuesday</ion-label>
+      <ion-input [(ngModel)]="stamp.tue" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Wednesday</ion-label>
+      <ion-input [(ngModel)]="stamp.wed" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Thursday</ion-label>
+      <ion-input [(ngModel)]="stamp.thu" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Friday</ion-label>
+      <ion-input [(ngModel)]="stamp.fri" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Saturday</ion-label>
+      <ion-input [(ngModel)]="stamp.sat" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Sunday</ion-label>
+      <ion-input [(ngModel)]="stamp.sun" [disabled]="changeAble" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Total</ion-label>
+      <ion-input [(ngModel)]="stamp.total" [disabled]="true" type="number"></ion-input>
+    </ion-item>
+  </div>
+
+  <ion-button expand="block" color="tertiary" (click)="updateWeek()" [disabled]="changeAble">
+    <ion-icon name="save" slot="start"></ion-icon>
+    Save
+  </ion-button>
+
+  <ion-button expand="block" color="success" (click)="submitWeek()" [disabled]="changeAble">
+    <ion-icon name="checkmark-done-outline"></ion-icon>
+    Submit
+  </ion-button>
+
+</ion-content>

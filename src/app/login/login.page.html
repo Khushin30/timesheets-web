@@ -1,0 +1,42 @@
+<ion-header>
+
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-card>
+        <form [formGroup]="credentials" (ngSubmit)="login()">
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+          </ion-item>
+
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+          </ion-item>
+
+          <ion-button type="submit" [disabled]="!credentials.valid" >Login</ion-button>
+        </form>
+      </ion-card>
+
+      <ion-card>
+        <form [formGroup]="credentials1" (ngSubmit)="register()">
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+          </ion-item>
+
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+          </ion-item>
+
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="fullName" placeholder="Full Name" formControlName="fullName"></ion-input>
+          </ion-item>
+
+          <ion-button type="submit" color="tertiary" [disabled]="!credentials1.valid" (click)="register()">Register</ion-button>
+
+        </form>
+      </ion-card>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-title>Timestamp</ion-title>
+        <ion-button (click)="logOut()">Log Out
+          <ion-icon slot="icon-only" name="log-out"></ion-icon>
+        </ion-button>
+      </ion-row>
+    </ion-grid>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+
+      <div class="ion-text-left">
+        Name: {{name}}
+      </div>
+
+
+      <div class="ion-text-center">
+        Email: {{email}}
+      </div>
+
+
+      <div class="ion-text-right">
+        EmpID: {{id}}
+      </div>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item *ngFor="let stamp of stamps">
+      <ion-label>
+        Week of {{stamp.weekOf}}, Total: {{stamp.total}}
+      </ion-label>
+      <ion-button (click)="openStamp(stamp)" color="warning" [disabled]="stamp.submitted">
+        <ion-icon name="create-outline"></ion-icon> Edit
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-button color="success" (click)="clockIn()" id="BTN_clockIn">Clock In</ion-button>
+  <ion-button color="danger" (click)="clockOut()" id="BTN_clockOut">Clock Out</ion-button>
+
+</ion-content>
+
