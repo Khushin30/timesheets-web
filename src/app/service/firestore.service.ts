@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, doc, setDoc, Firestore, updateDoc, getDoc, getDocs, collectionData } from '@angular/fire/firestore';
+import { collection, doc, setDoc, Firestore, updateDoc, getDoc, getDocs } from '@angular/fire/firestore';
 import { Auth, getAuth } from '@angular/fire/auth';
 import { DataService } from './data.service';
 import { Observable } from 'rxjs';
@@ -19,6 +19,13 @@ export interface Stamp{
   sun: number;
   submitted: boolean;
   total: number;
+}
+
+export interface User{
+  workerID: number;
+  isAdmin: boolean;
+  email: string;
+  fullName: string;
 }
 
 
@@ -124,11 +131,13 @@ export class FirestoreService {
     return false;
   }
 
-  async addUserInfo(email, name: string, id: number){
-    const docRef = doc(this.firestore, `${email}/info`);
+  async addUserInfo(e, name: string, id: number, admin: boolean){
+    const docRef = doc(this.firestore, `Users/${e}`);
     return await setDoc(docRef, {
       fullName: name,
       workerID: id,
+      isAdmin: admin,
+      email: e,
     });
   }
 
@@ -137,17 +146,28 @@ export class FirestoreService {
     const querySnapshot = await getDocs(docRef);
     const stamps: Stamp[] = [];
     querySnapshot.forEach((d) =>{
-      if (d.id !== 'info') {
-        stamps.push(d.data() as unknown as Stamp);
-      } else {
-        console.log(`not valid date: ${d.id}`);
-      }
+      stamps.push(d.data() as unknown as Stamp);
+    });
+    return stamps;
+  }
+
+  async getAllStampsByEmail(email: string) {
+    const docRef = collection(this.firestore, email);
+    const querySnapshot = await getDocs(docRef);
+    const stamps: Stamp[] = [];
+    querySnapshot.forEach((d) =>{
+      stamps.push(d.data() as unknown as Stamp);
     });
     return stamps;
   }
 
   async getStampById(id: string){
     const docRef = doc(this.firestore,`${this.auth.currentUser.email}/${this.ds.convertDateToString(new Date(id))}`);
+    return await (await getDoc(docRef)).data();
+  }
+
+  async getStampByEmailAndId(id: string, email: string){
+    const docRef = doc(this.firestore,`${email}/${this.ds.convertDateToString(new Date(id))}`);
     return await (await getDoc(docRef)).data();
   }
 
@@ -185,7 +205,15 @@ export class FirestoreService {
   }
 
   async getName(){
-    const docRef = doc(this.firestore, `${this.auth.currentUser.email}/info`);
+    const docRef = doc(this.firestore, `Users/${this.auth.currentUser.email}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.data()) {
+      return docSnap.data().fullName;
+    }
+  }
+
+  async getNameByEmail(email: string){
+    const docRef = doc(this.firestore, `Users/${email}`);
     const docSnap = await getDoc(docRef);
     if (docSnap.data()) {
       return docSnap.data().fullName;
@@ -193,7 +221,15 @@ export class FirestoreService {
   }
 
   async getID(){
-    const docRef = doc(this.firestore, `${this.auth.currentUser.email}/info`);
+    const docRef = doc(this.firestore, `Users/${this.auth.currentUser.email}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.data()) {
+      return docSnap.data().workerID;
+    }
+  }
+
+  async getIDByEmail(email: string){
+    const docRef = doc(this.firestore, `Users/${email}`);
     const docSnap = await getDoc(docRef);
     if (docSnap.data()) {
       return docSnap.data().workerID;
@@ -229,5 +265,31 @@ export class FirestoreService {
     });
   }
 
+  async isAdmin(){
+    const docRef = doc(this.firestore, `Users/${this.auth.currentUser.email}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.data()) {
+      return docSnap.data().isAdmin;
+    }
+    return false;
+  }
 
+  async getAllUsers(){
+    const docRef = collection(this.firestore, 'Users');
+    const querySnapshot = await getDocs(docRef);
+    const users: User[] = [];
+    querySnapshot.forEach((d) =>{
+      users.push(d.data() as unknown as User);
+    });
+    return users;
+  }
+
+  async isEmailAdmin(email: string){
+    const docRef = doc(this.firestore, `Users/${email}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.data()) {
+      return docSnap.data().isAdmin;
+    }
+    return false;
+  }
 }

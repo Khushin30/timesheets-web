@@ -10,11 +10,17 @@ export class AuthService {
 
   constructor(private auth: Auth, private fs: FirestoreService, private ds: DataService) { }
 
-  async register({email, password, fullName}){
+  async register({email, password, fullName}, type){
     try {
       const user = await createUserWithEmailAndPassword(this.auth, email,password);
-      this.fs.createWeek(email);
-      this.fs.addUserInfo(email, fullName, 1);
+      if (user) {
+        this.fs.createWeek(email);
+        if (type === 'admin') {
+          console.log(this.fs.addUserInfo(email, fullName, 1, true));
+        } else {
+          console.log(this.fs.addUserInfo(email, fullName, 1, false));
+        }
+      }
       return user;
     } catch (e) {
       console.log(e);

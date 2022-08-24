@@ -22,11 +22,6 @@ const routes: Routes = [
     ...redirectLoggedInToHome
   },
   {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full'
-  },
-  {
     path: 'timestamp',
     loadChildren: () => import('./timestamp/timestamp.module').then( m => m.TimestampPageModule),
     ...canActivate(redirectUnauthorizedToLogin)
@@ -34,6 +29,14 @@ const routes: Routes = [
   {
     path: 'modal',
     loadChildren: () => import('./modal/modal.module').then( m => m.ModalPageModule)
+  },
+  {
+    path: 'edit',
+    loadChildren: () => import('./edit/edit.module').then( m => m.EditPageModule)
+  },
+  {
+    path: 'new-user',
+    loadChildren: () => import('./new-user/new-user.module').then( m => m.NewUserPageModule)
   },
 ];
 

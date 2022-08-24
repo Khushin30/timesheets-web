@@ -38,7 +38,7 @@
       <ion-label>
         Week of {{stamp.weekOf}}, Total: {{stamp.total}}
       </ion-label>
-      <ion-button (click)="openStamp(stamp)" color="warning" [disabled]="stamp.submitted">
+      <ion-button (click)="openStamp(stamp)" color="warning" [disabled]="stamp.submitted && !isAdmin">
         <ion-icon name="create-outline"></ion-icon> Edit
       </ion-button>
     </ion-item>

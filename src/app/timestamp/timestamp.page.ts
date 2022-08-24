@@ -22,6 +22,7 @@ export class TimestampPage implements OnInit {
   name: string;
   email: string;
   id: string;
+  isAdmin = false;
   constructor(
     private firestoreService: FirestoreService,
     private authService: AuthService,
@@ -30,11 +31,21 @@ export class TimestampPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.stamps = await this.firestoreService.getAllStamps();
-    this.name = await this.firestoreService.getName();
-    this.email = this.firestoreService.getEmail();
-    this.id = await this.firestoreService.getID();
-    console.log(this.stamps);
+    if (sessionStorage.getItem('user')) {
+      this.isAdmin = true;
+      console.log(sessionStorage.getItem('user'));
+      this.email = sessionStorage.getItem('user');
+      this.name = await this.firestoreService.getNameByEmail(this.email);
+      this.id = await this.firestoreService.getIDByEmail(this.email);
+      this.stamps = await this.firestoreService.getAllStampsByEmail(this.email);
+      console.log(this.stamps);
+      console.log(this.email);
+    }else{
+      this.stamps = await this.firestoreService.getAllStamps();
+      this.name = await this.firestoreService.getName();
+      this.email = this.firestoreService.getEmail();
+      this.id = await this.firestoreService.getID();
+    }
     console.log(await this.firestoreService.isClockedIn());
     this.btnClockIn = document.getElementById('BTN_clockIn') as HTMLIonButtonElement;
     this.btnClockOut = document.getElementById('BTN_clockOut') as HTMLIonButtonElement;
@@ -83,7 +94,7 @@ export class TimestampPage implements OnInit {
       componentProps: {
         id: stamp.weekOf,
       },
-      breakpoints: [0, .5, .8],
+      breakpoints: [0, .5, .8, 1],
       initialBreakpoint: .8
     });
     modal.present();

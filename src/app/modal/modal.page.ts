@@ -21,8 +21,13 @@ export class ModalPage implements OnInit {
     ) { }
 
   async ngOnInit() {
-    this.stamp = await this.fs.getStampById(this.id) as unknown as Stamp;
-    this.changeAble = this.stamp.submitted;
+    if (sessionStorage.getItem('user')) {
+      this.stamp = await this.fs.getStampByEmailAndId(this.id, sessionStorage.getItem('user')) as unknown as Stamp;
+      this.changeAble = false;
+    } else {
+      this.stamp = await this.fs.getStampById(this.id) as unknown as Stamp;
+      this.changeAble = this.stamp.submitted;
+    }
     console.log(this.stamp.submitted);
   }
 

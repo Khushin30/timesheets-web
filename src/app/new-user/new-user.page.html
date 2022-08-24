@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>newUser</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-card>
+        <form [formGroup]="credentials" (ngSubmit)="register()">
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+          </ion-item>
+
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+          </ion-item>
+
+          <ion-item fill="solid" class="ion-margin-bottom">
+            <ion-input placeholder="Full Name" formControlName="fullName"></ion-input>
+          </ion-item>
+
+          <ion-list>
+            <ion-radio-group value="user" allowEmptySelection="false" name="radio-group" (ionChange)="radioGroupChange($event)">
+              <ion-list-header>
+                <ion-label>User Type</ion-label>
+              </ion-list-header>
+
+              <ion-item>
+                <ion-label>User</ion-label>
+                <ion-radio slot="start" value="user"></ion-radio>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>Admin</ion-label>
+                <ion-radio slot="start" value="admin"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+
+          <ion-button type="submit" [disabled]="!credentials.valid" >Register</ion-button>
+        </form>
+      </ion-card>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

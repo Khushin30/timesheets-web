@@ -13,9 +13,11 @@ import { Router } from '@angular/router';
 export class LoginPage implements OnInit {
   date1: Date = null;
   date2: Date = null;
-
   credentials: FormGroup;
   credentials1: FormGroup;
+  btnManage: HTMLIonButtonElement;
+  btnTimeSheet: HTMLIonButtonElement;
+  isAdmin: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -33,27 +35,11 @@ export class LoginPage implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
 
     });
+    this.btnManage = document.getElementById('btn_manage') as HTMLIonButtonElement;
+    this.btnTimeSheet = document.getElementById('btn_timeSheets') as HTMLIonButtonElement;
 
-    this.credentials1 = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      fullName: ['', [Validators.required]]
-    });
   }
 
-  async register(){
-    const loading = await this.loadinController.create();
-    loading.present();
-    console.log(this.credentials1.value);
-    const user = await this.authService.register(this.credentials1.value);
-    loading.dismiss();
-
-    if (user) {
-      this.router.navigateByUrl('/home', {replaceUrl: true});
-    }else{
-      this.showAlert('Registration failed', 'Please try again');
-    }
-  }
 
   async login(){
     const loading = await this.loadinController.create();
@@ -62,9 +48,14 @@ export class LoginPage implements OnInit {
     loading.dismiss();
 
     if (user) {
-      console.log('doing');
-      this.router.navigateByUrl('/home', {replaceUrl: true});
-      console.log('done');
+      if (await this.fs.isAdmin()) {
+        console.log('is here');
+        this.isAdmin = true;
+        this.btnManage.setAttribute('disabled', 'false');
+        this.btnTimeSheet.setAttribute('disabled', 'false');
+      }else{
+        this.takeToTimesheet();
+      }
     }else{
       this.showAlert('Login failed', 'Please try again');
     }
@@ -84,6 +75,18 @@ export class LoginPage implements OnInit {
     const  minutes = Math.floor((duration / (1000 * 60)) % 60);
     const  hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
     return (hours + ':' + minutes + ':' + seconds + '.' + milliseconds);
+  }
+
+  takeToTimesheet(){
+    this.router.navigateByUrl('/home', {replaceUrl: true});
+  }
+
+  takeToEditPage(){
+    this.router.navigateByUrl('/edit', {replaceUrl: true});
+  }
+
+  takeToNewUser(){
+    this.router.navigateByUrl('/new-user', {replaceUrl: true});
   }
 
 }
