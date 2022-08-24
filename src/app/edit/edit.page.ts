@@ -21,6 +21,7 @@ export class EditPage implements OnInit {
   ) { }
 
   async ngOnInit() {
+    sessionStorage.removeItem('user');
     this.name = await this.firestoreService.getName();
     this.email = this.firestoreService.getEmail();
     this.id = await this.firestoreService.getID();
@@ -30,6 +31,11 @@ export class EditPage implements OnInit {
   editUser(user: User){
     sessionStorage.setItem('user', user.email);
     this.router.navigateByUrl('/home', {replaceUrl: true});
+  }
+
+  takeToHomePage(){
+    sessionStorage.removeItem('user');
+    this.router.navigateByUrl('/login', {replaceUrl: true});
   }
 
 }

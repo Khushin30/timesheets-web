@@ -29,15 +29,20 @@ export class ModalPage implements OnInit {
       this.changeAble = this.stamp.submitted;
     }
     console.log(this.stamp.submitted);
+    console.log(this.changeAble);
   }
 
   updateWeek(){
-    this.fs.updateWeek(this.stamp);
+    if (sessionStorage.getItem('user')) {
+      this.fs.updateWeek(this.stamp, sessionStorage.getItem('user'));
+    } else {
+      this.fs.updateWeek(this.stamp, this.fs.getEmail());
+    }
     this.modalCtrl.dismiss();
   }
 
   async submitWeek(){
-    if (this.ds.isAbleToSubmit(new Date('Aug 19 2022'))) {
+    if (this.ds.isAbleToSubmit(new Date('Aug 19 2022')) || !this.changeAble) {
       const alert = await this.alertCtrl.create({
         header: 'Once you submit a timesheet it cannot be edited! Do you want to continue?',
         buttons: [
@@ -49,8 +54,13 @@ export class ModalPage implements OnInit {
             text: 'Continue',
             handler: (res) => {
               console.log('yeah here');
-              this.fs.submitWeek(this.stamp);
-              this.fs.createNextWeek();
+              if (sessionStorage.getItem('user')) {
+                this.fs.submitWeek(this.stamp, sessionStorage.getItem('user'));
+                this.fs.createNextWeek(sessionStorage.getItem('user'));
+              } else {
+                this.fs.submitWeek(this.stamp, this.fs.getEmail());
+                this.fs.createNextWeek(this.fs.getEmail());
+              }
               this.modalCtrl.dismiss();
             }
           }

@@ -58,7 +58,7 @@ export class FirestoreService {
   }
 
   async clockIn(){
-    const dummy = new Date('Aug 18 2022 10:32:20 GMT-0500 (Central Daylight Time)').toString();
+    const dummy = new Date('Aug 24 2022 10:12:20 GMT-0500 (Central Daylight Time)').toString();
     console.log('clocked in');
     console.log(dummy);
     const date = this.ds.getFirstDayOfWeek(new Date());
@@ -68,7 +68,7 @@ export class FirestoreService {
   }
 
   async clockOut(){
-    const dummy = new Date('Aug 18 2022 17:32:20 GMT-0500 (Central Daylight Time)').toString();
+    const dummy = new Date().toString();
     console.log('clocked out');
     console.log(dummy);
     try {
@@ -84,7 +84,7 @@ export class FirestoreService {
     const docSnap = await getDoc(docRef);
     try {
       const timeIn = new Date(docSnap.data().clockIn);
-      const timeOut = new Date('Aug 18 2022 17:32:20 GMT-0500 (Central Daylight Time)');
+      const timeOut = new Date();
       const prevTotal = docSnap.data().total;
       const total1 = this.getDifference(timeOut, timeIn);
       const day = timeIn.toString().split(' ')[0].toLowerCase();
@@ -171,8 +171,8 @@ export class FirestoreService {
     return await (await getDoc(docRef)).data();
   }
 
-  async updateWeek(stamp: Stamp){
-    const docRef = doc(this.firestore,`${this.auth.currentUser.email}/${stamp.weekOf}`);
+  async updateWeek(stamp: Stamp, email: string){
+    const docRef = doc(this.firestore,`${email}/${stamp.weekOf}`);
     return await updateDoc(docRef, {
       mon: stamp.mon,
       tue: stamp.tue,
@@ -185,23 +185,32 @@ export class FirestoreService {
     });
   }
 
-  async submitWeek(stamp: Stamp){
-    const docRef = doc(this.firestore,`${this.auth.currentUser.email}/${stamp.weekOf}`);
-    return await updateDoc(docRef, {
-      mon: stamp.mon,
-      tue: stamp.tue,
-      wed: stamp.wed,
-      thu: stamp.thu,
-      fri: stamp.fri,
-      sat: stamp.sat,
-      sun: stamp.sun,
-      submitted: true,
-      total: (stamp.mon + stamp.tue + stamp.wed + stamp.thu + stamp.fri + stamp.sat + stamp.sun),
-    });
+  async submitWeek(stamp: Stamp, email: string){
+    const docRef = doc(this.firestore,`${email}/${stamp.weekOf}`);
+    try {
+      return await updateDoc(docRef, {
+        mon: stamp.mon,
+        tue: stamp.tue,
+        wed: stamp.wed,
+        thu: stamp.thu,
+        fri: stamp.fri,
+        sat: stamp.sat,
+        sun: stamp.sun,
+        submitted: true,
+        total: (stamp.mon + stamp.tue + stamp.wed + stamp.thu + stamp.fri + stamp.sat + stamp.sun),
+      });
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
 
   getEmail(){
-    return this.auth.currentUser.email;
+    try {
+      return this.auth.currentUser.email;
+    } catch (error) {
+      return null;
+    }
   }
 
   async getName(){
@@ -236,7 +245,7 @@ export class FirestoreService {
     }
   }
 
-  async createNextWeek(){
+  async createNextWeek(email: string){
     const nextWeekOf = this.ds.getNextMonday();
     const date = this.ds.getFirstDayOfWeek(new Date());
     console.log(this.ds.convertDateToString(date));
@@ -247,10 +256,10 @@ export class FirestoreService {
         firstOfWeeks.push(new Date(stamp.weekOf));
       }
       firstOfWeeks.sort(compareAsc);
-      const docToDelete = doc(this.firestore, `${this.auth.currentUser.email}/${this.ds.convertDateToString(firstOfWeeks[0])}`);
+      const docToDelete = doc(this.firestore, `${email}/${this.ds.convertDateToString(firstOfWeeks[0])}`);
       await deleteDoc(docToDelete);
     }
-    return await setDoc(doc(this.firestore,`${this.auth.currentUser.email}/${nextWeekOf}`), {
+    return await setDoc(doc(this.firestore,`${email}/${nextWeekOf}`), {
       weekOf: nextWeekOf,
       clockIn: '',
       mon: 0,
@@ -291,5 +300,9 @@ export class FirestoreService {
       return docSnap.data().isAdmin;
     }
     return false;
+  }
+
+  getUserEmail(){
+    return this.getEmail();
   }
 }

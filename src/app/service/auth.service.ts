@@ -41,7 +41,9 @@ export class AuthService {
   }
 
 
+
   logout(){
+    sessionStorage.removeItem('user');
     return signOut(this.auth);
   }
 }

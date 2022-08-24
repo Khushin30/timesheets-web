@@ -32,8 +32,8 @@ export class TimestampPage implements OnInit {
 
   async ngOnInit() {
     if (sessionStorage.getItem('user')) {
-      this.isAdmin = true;
       console.log(sessionStorage.getItem('user'));
+      this.isAdmin = true;
       this.email = sessionStorage.getItem('user');
       this.name = await this.firestoreService.getNameByEmail(this.email);
       this.id = await this.firestoreService.getIDByEmail(this.email);
@@ -41,6 +41,11 @@ export class TimestampPage implements OnInit {
       console.log(this.stamps);
       console.log(this.email);
     }else{
+      if (this.firestoreService.isAdmin()) {
+        this.isAdmin = true;
+      } else {
+        this.isAdmin = false;
+      }
       this.stamps = await this.firestoreService.getAllStamps();
       this.name = await this.firestoreService.getName();
       this.email = this.firestoreService.getEmail();
@@ -98,6 +103,11 @@ export class TimestampPage implements OnInit {
       initialBreakpoint: .8
     });
     modal.present();
+  }
+
+  takeToHomePage(){
+    sessionStorage.removeItem('user');
+    this.router.navigateByUrl('/login', {replaceUrl: true});
   }
 
 }

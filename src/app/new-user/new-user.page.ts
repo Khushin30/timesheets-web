@@ -58,4 +58,9 @@ export class NewUserPage implements OnInit {
     console.log(event.detail.value);
     }
 
+  takeToHomePage(){
+    sessionStorage.removeItem('user');
+    this.router.navigateByUrl('/login', {replaceUrl: true});
+  }
+
 }

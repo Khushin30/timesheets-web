@@ -3,6 +3,9 @@
     <ion-grid>
       <ion-row>
         <ion-title>Timestamp</ion-title>
+        <ion-button id="btn_manage" (click)="takeToHomePage()" *ngIf="isAdmin">
+          <ion-icon name="home-outline"></ion-icon>
+        </ion-button>
         <ion-button (click)="logOut()">Log Out
           <ion-icon slot="icon-only" name="log-out"></ion-icon>
         </ion-button>

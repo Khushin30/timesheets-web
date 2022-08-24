@@ -37,7 +37,9 @@ export class LoginPage implements OnInit {
     });
     this.btnManage = document.getElementById('btn_manage') as HTMLIonButtonElement;
     this.btnTimeSheet = document.getElementById('btn_timeSheets') as HTMLIonButtonElement;
-
+    if (this.fs.getEmail()) {
+      this.isAdmin = true;
+    }
   }
 
 
